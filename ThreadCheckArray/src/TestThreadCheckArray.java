@@ -1,4 +1,13 @@
+import java.util.ArrayList;
 import java.util.Scanner;
+
+/**
+* The TestThreadCheckArray class is a simple test program that demonstrates the 
+* use of multiple threads to solve the subset-sum problem. It reads an array of 
+* integers and a target sum `b` from the user, and then spawns two threads to 
+* check if there is a subset of the array whose sum equals `b`. 
+*/
+
 
 public class TestThreadCheckArray {
 	public static void main(String[] args) {
@@ -6,23 +15,28 @@ public class TestThreadCheckArray {
 			Thread thread1, thread2;
 			System.out.println("Enter array size");
 			int num  = input.nextInt();
-			int [] array = new int[num];
+			ArrayList<Integer> array = new ArrayList<>();
 			System.out.println("Enter numbers for array");
 			
+			 // Read numbers into the array
 			for (int index = 0; index < num; index++) 
-				array[index] = input.nextInt();
+				array.add(input.nextInt());
 			
 			System.out.println("Enter number");
 			num = input.nextInt();
 			
+			// Create SharedData object with the array and target sum
 			SharedData sd = new SharedData(array, num);
 			
+			
+			// Create and start two threads
 			thread1 = new Thread(new ThreadCheckArray(sd), "thread1");
 			thread2 = new Thread(new ThreadCheckArray(sd), "thread2");
 			thread1.start();
 			thread2.start();
 			try 
-			{
+			{    // Wait for both threads to finish
+
 				thread1.join();
 				thread2.join();
 			} 
@@ -30,16 +44,22 @@ public class TestThreadCheckArray {
 			{
 				e.printStackTrace();
 			}
+			
+			// If no solution is found, print "Sorry"
 			if (!sd.getFlag())
 			{
 				System.out.println("Sorry");
 				return;
 			}
-			System.out.println("Solution for b : " + sd.getB() + ",n = " + sd.getArray().length);
+			
+		    // Print the solution
+			System.out.println("Solution for b : " + sd.getB() + ",n = " + sd.getArray().size());
 			System.out.print("I:    ");
-			for(int index = 0; index < sd.getArray().length ; index++)
+			for(int index = 0; index < sd.getArray().size() ; index++)
 				System.out.print(index + "    ");
 			System.out.println();
+			
+			// Print the array values
 			System.out.print("A:    ");
 			for (int index : sd.getArray())
 			{
@@ -52,12 +72,15 @@ public class TestThreadCheckArray {
 					if (index == 0)
 						break;
 				}
+				// Adjust spacing for alignment
 				for (int i = 0; i < counter; i++)
 					System.out.print(" ");
 			}
 
 			System.out.println();
 			System.out.print("C:    ");
+			
+			// Print the solution (1 and 0) for each element in the array
 			for (boolean index : sd.getWinArray())
 			{
 				if (index)
